@@ -1,0 +1,90 @@
+:host {
+    display: block;
+    font-family: "Outfit", sans-serif;
+}
+
+// Colores de ejemplo: Ajusta según tu paleta global
+$primary-color: #fca311; // Amarillo/Naranja Primario
+$text-dark: #14213d; // Negro/Azul oscuro para texto
+$error-color: #ef4444; // Rojo Tailwind
+
+// Estilos globales de Material Field y Select
+::ng-deep {
+
+    // Aplicar la fuente a todos los elementos Material
+    .mat-mdc-form-field, .mat-mdc-select-value-text, .mat-mdc-option {
+        font-family: "Outfit", sans-serif !important;
+    }
+
+    // Estilo general para todos los form fields con appearance="outline"
+    .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
+        
+        // 1. Darle un borde más suave y redondeado (como en la imagen)
+        .mat-mdc-form-field-flex {
+            padding: 0.5rem 1rem !important;
+            border-radius: 0.75rem; 
+        }
+
+        // 2. Color del borde cuando NO está enfocado
+        .mdc-notched-outline {
+            border-color: #e5e7eb !important; /* gray-200 */
+            border-width: 1px !important;
+        }
+    }
+
+    // Color del borde cuando está enfocado
+    .mat-mdc-form-field:focus-within {
+        .mdc-notched-outline {
+            // Quitamos el borde más grueso y mantenemos el color
+            border-color: $primary-color !important;
+            border-width: 1px !important; // Mantenemos 1px
+            
+            // Añadimos una ligera sombra interior (opcional, para imitar el look de la imagen)
+            box-shadow: 0 0 0 1px $primary-color; 
+        }
+        .mat-mdc-form-field-label {
+            color: $primary-color !important;
+        }
+    }
+
+    // Color de error
+    .mat-mdc-form-field-invalid {
+        .mdc-notched-outline {
+            border-color: $error-color !important;
+            border-width: 1px !important;
+            box-shadow: none; 
+        }
+        .mat-mdc-form-field-label, .mat-error {
+            color: $error-color !important;
+        }
+    }
+
+    // Estilo para el mat-select
+    .mat-mdc-select-trigger {
+        padding: 0;
+    }
+}
+
+/* Estilos para Botones */
+
+.button-primary {
+    background-color: $primary-color;
+    color: $text-dark;
+    border: none;
+    &:hover {
+        background-color: darken($primary-color, 10%);
+    }
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.button-secundary {
+    background-color: transparent; 
+    color: $error-color;
+    border: 1px solid $error-color;
+    &:hover {
+        background-color: #fef2f2; 
+    }
+}

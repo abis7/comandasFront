@@ -1,3 +1,77 @@
-.new-user{
-    margin-left: 16px;
+:host {
+  display: block;
+  font-family: "Outfit", sans-serif;
 }
+
+/* Colores personalizados para los badges de rol */
+$admin-bg: #fee2e2; // red-100
+$admin-text: #b91c1c; // red-700
+$cajero-bg: #dbeafe; // blue-100
+$cajero-text: #1d4ed8; // blue-700
+$cocinero-bg: #dcfce7; // green-100
+$cocinero-text: #15803d; // green-700
+$cliente-bg: #fef3c7; // yellow-100
+$cliente-text: #a16207; // yellow-700
+
+/* Estilos para la tabla de Material */
+::ng-deep {
+  /* Header de la tabla */
+  .mat-mdc-header-cell {
+    background-color: #f9fafb !important; /* gray-50 */
+    color: #4b5563 !important; /* gray-600 */
+    font-weight: 700 !important;
+    border-bottom: 1px solid #e5e7eb !important; /* gray-200 */
+    text-transform: uppercase !important;
+  }
+
+  /* Celdas del cuerpo */
+  .mat-mdc-cell {
+    font-family: "Outfit", sans-serif !important;
+    font-size: 1rem !important;
+    color: #4b5563 !important; /* gray-600 */
+    border-bottom: 1px solid #f3f4f6 !important; /* gray-100 */
+  }
+
+  /* Fila hover (combinado con la clase Tailwind en el HTML) */
+  .mat-mdc-row:hover {
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  /* Fila al hacer clic (para evitar que el color del hover se aplique sobre el color de Material al seleccionar) */
+  .mat-mdc-row.mdc-data-table__row--selected {
+      background-color: #eef2ff !important; /* blue-50 */
+  }
+  
+  /* Paginador */
+  .mat-mdc-paginator {
+    background: transparent !important;
+    font-family: "Outfit", sans-serif !important;
+    font-size: 0.9rem;
+    color: #4b5563;
+  }
+  
+  .mat-mdc-paginator-container {
+    padding: 0 !important;
+  }
+
+  /* Sort header */
+  .mat-sort-header-arrow {
+    color: #9ca3af !important; /* gray-400 */
+    opacity: 0.8 !important;
+  }
+
+  /* Ocultar el input nativo de MatFormField */
+  .mat-mdc-form-field {
+    display: none !important;
+  }
+}
+
+/* Badge de roles (Manteniendo las clases originales para la funcionalidad) */
+.bg-red-100 { background-color: $admin-bg; }
+.text-red-700 { color: $admin-text; }
+.bg-blue-100 { background-color: $cajero-bg; }
+.text-blue-700 { color: $cajero-text; }
+.bg-green-100 { background-color: $cocinero-bg; }
+.text-green-700 { color: $cocinero-text; }
+.bg-yellow-100 { background-color: $cliente-bg; }
+.text-yellow-700 { color: $cliente-text; }

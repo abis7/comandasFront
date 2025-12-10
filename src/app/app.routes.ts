@@ -10,10 +10,18 @@ import { OrdersViewComponent } from './private/orders-view/orders-view.component
 import { DashAdminComponent } from './private/dash-admin/dash-admin.component';
 import { UserViewComponent } from './private/user-view/user-view.component';
 import { UserComponent } from './private/user/user.component';
+import { SignUpComponent } from './public/auth/sign-up/sign-up.component';
+import { MyOrdersComponent } from './private/my-orders/my-orders.component';
+import { MyProfileComponent } from './private/my-profile/my-profile.component';
+
 export const routes: Routes = [
   {
     path: 'auth/sign-in',
     component: SignInComponent,
+  },
+  {
+    path: 'auth/sign-up',
+    component: SignUpComponent
   },
   {
     path: '',
@@ -55,6 +63,14 @@ export const routes: Routes = [
       {
         path: 'user-edit/:id',
         component: UserComponent,
+      },
+      {
+        path: 'my-orders',
+        component: MyOrdersComponent
+      },
+      {
+        path: 'my-profile',
+        component: MyProfileComponent
       },
     ],
   },

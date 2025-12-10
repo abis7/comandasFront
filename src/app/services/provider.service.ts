@@ -44,16 +44,25 @@ export class ProviderService {
       this._http
         .request<any>(method, url + action, {
           body: method != 'GET' ? data : null,
-          headers: this.headers(),
-          params: method !== 'POST' ? this.params(data) : {},
+          headers: this.headers(), 
+          params: method !== 'POST' && data ? this.params(data) : {},
         })
-        .subscribe((response: any) => {
-          // Resuelve la promesa con los datos de la respuesta si no hay errores
-          if (!response.error) resolve(response.msg);
-          // Rechaza la promesa con el error si se encuentra un error en la respuesta
-          else {
-            this._snackBar.open(this.excep[response.error_code], '', {duration: 3000});
-            reject(response.msg);
+        .subscribe({
+          next: (response: any) => {
+            // Resuelve la promesa con los datos de la respuesta si no hay errores
+            if (!response.error) resolve(response.msg);
+            // Rechaza la promesa con el error si se encuentra un error en la respuesta
+            else {
+              //this._snackBar.open(this.excep[response.error_code], '', {duration: 0});
+              reject(response.msg);
+            }
+          },
+          error: (err: any) => {
+            // Maneja errores HTTP (400, 401, 500, etc.)
+            const errorCode = err?.error?.error_code;
+            const errorMsg = this.excep[errorCode] || 'Error de conexión';
+            //this._snackBar.open(errorMsg, '', {duration: 3000});
+            reject(err?.error?.msg || 'error');
           }
         })
     );

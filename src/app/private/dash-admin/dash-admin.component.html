@@ -1,16 +1,125 @@
-<mat-card appearance="outlined">
-    <mat-card-header>
-      <mat-card-title>Ventas totales</mat-card-title>
-      <mat-card-subtitle>{{total.total}}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-header>
-        <mat-card-title>Promedio tiempo de realizacion</mat-card-title>
-        <mat-card-subtitle>{{avg.minutos}} minutos</mat-card-subtitle>
-      </mat-card-header>
-  </mat-card>  
-<h2>Ventas del mes</h2>
-<canvas baseChart [data]="dataSales" [type]="'bar'" #chartSales></canvas>
-<h2>Mejores clientes</h2>
-<canvas baseChart [data]="dataClient" [type]="'bar'"></canvas>
-<h2>Productos más vendidos</h2>
-<canvas baseChart [data]="dataProduct" [type]="'bar'"></canvas>
+<div class="p-6 space-y-6 bg-gray-50 min-h-screen">
+  
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Dashboard de Administración</h1>
+      <p class="text-gray-500 mt-1">Resumen financiero</p>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="flex justify-center items-center h-64 bg-white rounded-xl shadow-md">
+    <span class="loading loading-spinner loading-lg text-blue-600"></span>
+    <p class="ml-3 text-lg text-gray-600">Cargando datos del dashboard...</p>
+  </div>
+
+  <div *ngIf="!loading && isDataReady" class="space-y-6">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> 
+      
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 flex flex-col justify-between">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500">Ventas Totales (Acumulado)</p>
+            <h2 class="text-4xl font-extrabold text-blue-600 mt-1">
+              {{ total.total | currency:'$':'symbol':'1.2-2' }}
+            </h2>
+          </div>
+          <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+        </div>
+        <p class="text-xs text-gray-400 mt-4">Ingresos actualizados en tiempo real</p>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 flex flex-col justify-between">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500">Tiempo Promedio de Prep.</p>
+            <h2 class="text-4xl font-extrabold text-green-600 mt-1">
+              {{ avg.minutos }}<span class="text-2xl font-semibold ml-2">min</span>
+            </h2>
+          </div>
+          <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+        </div>
+        <p class="text-xs text-gray-400 mt-4">Por orden completada</p>
+      </div>
+      
+      </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden lg:col-span-2">
+        <div class="px-6 py-4 border-b border-gray-100">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">Ventas del Año por Mes</h3>
+              <p class="text-sm text-gray-500">Total de ventas por mes.</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-6">
+          <canvas baseChart [data]="dataSales" [options]="barChartOptions" [type]="'bar'"></canvas> 
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">Top 3 Mejores Clientes</h3>
+              <p class="text-sm text-gray-500">Clientes con más compras.</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-6">
+          <canvas baseChart [data]="dataClient" [options]="barChartOptions" [type]="'bar'"></canvas>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">Top 3 Productos Más Vendidos</h3>
+              <p class="text-sm text-gray-500">Ranking por cantidad de unidades vendidas.</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-6">
+          <canvas baseChart [data]="dataProduct" [options]="barChartOptions" [type]="'bar'"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

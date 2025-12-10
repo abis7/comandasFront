@@ -1,0 +1,16 @@
+﻿/* Animacion suave para la card */
+.shadow-sm {
+  transition: box-shadow 0.2s ease;
+}
+
+/* Input focus personalizado */
+.input:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(255, 202, 64, 0.2);
+}
+
+/* Boton deshabilitado */
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

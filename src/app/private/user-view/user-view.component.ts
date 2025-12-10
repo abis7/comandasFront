@@ -1,23 +1,25 @@
 import { Component, inject, ViewChild } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import { ProviderService } from '../../services/provider.service';
+import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-user-view',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, RouterLink, MatIcon],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, RouterLink],
   templateUrl: './user-view.component.html',
   styleUrl: './user-view.component.scss'
 })
 export class UserViewComponent {
   // Define las columnas a mostrar en la tabla
 displayedColumns: string[] = ['name', 'phone', 'rol'];
+
 
 // Crea una instancia de MatTableDataSource que manejará los datos de la tabla
 dataSource!: MatTableDataSource<any>;

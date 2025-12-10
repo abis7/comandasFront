@@ -1,42 +1,25 @@
-import { Component, ViewChild, inject, viewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormArray,
-  FormBuilder,
-  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  Validators,
 } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ProviderService } from '../../services/provider.service';
 import { Product } from '../../interfaces/product.model';
-import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
-import { CurrencyPipe, KeyValuePipe, NgClass, NgStyle } from '@angular/common';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { Ingredient } from '../../interfaces/ingredient.model';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { OrderService } from '../../services/order.service';
-import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
   imports: [
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSidenavModule,
-    KeyValuePipe,
-    MatSelectModule,
-    MatCheckboxModule,
-    NgStyle,
     CurrencyPipe,
-    NgClass,
     RouterLink,
   ],
   templateUrl: './menu.component.html',
@@ -44,30 +27,12 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class MenuComponent {
   private _provider: ProviderService = inject(ProviderService)
-  private _form_builder: FormBuilder = inject(FormBuilder)
   public _order: OrderService = inject(OrderService)
-
-  @ViewChild('barraComentarios') barraComentarios!: MatDrawer;
 
   menu: Product[] = [];
 
   async ngOnInit() {
-
     this.menu = await this._provider.request('GET', 'menu/viewIngredients');
-    console.log(this.menu);
-
-    this._order.formOrder.controls['order_details'].valueChanges.subscribe(
-      (value: any) => {
-        if (!value.length) this.barraComentarios.close();
-      }
-    );
-
-    console.log(this.orderDetailsArray().value);
-
-
-    if (this.orderDetailsArray().value.length && !this.orderEmpty()) {
-      this.barraComentarios.open();
-    }
   }
 
   filterByCategory(id_category: string): Product[] {
@@ -109,17 +74,12 @@ export class MenuComponent {
     name: string,
     name_category: string
   ) {
-    this.barraComentarios.open();
-
     (this._order.formOrder.controls['order_details'] as FormArray).push(
       this._order.orderDetails(products_idproducts, price, name, name_category)
     );
-    console.log(this._order.formOrder.value);
   }
 
   removeProduct(idproduct: string) {
-    console.log(idproduct);
-
     const index = this._order.formOrder.controls[
       'order_details'
     ].value.findIndex(
@@ -129,7 +89,6 @@ export class MenuComponent {
       (this._order.formOrder.controls['order_details'] as FormArray).removeAt(
         index
       );
-    console.log(this._order.formOrder.value);
   }
 
   addIngredient(

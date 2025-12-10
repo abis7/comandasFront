@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { OrderService } from '../../services/order.service';
-import { CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRadioChange, MatRadioModule } from '@angular/material/radio';
 import {
@@ -12,9 +12,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { ContentObserver } from '@angular/cdk/observers';
 import { ProviderService } from '../../services/provider.service';
-import { Router, RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { WebSocketsService } from '../../services/web-sockets.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { LocalstorageService } from '../../services/localstorage.service';
@@ -31,7 +30,8 @@ import { MatIconModule } from '@angular/material/icon';
     ReactiveFormsModule,
     MatInputModule,
     RouterLink,
-    MatIconModule
+    MatIconModule,
+    CommonModule
   ],
   templateUrl: './order-view.component.html',
   styleUrl: './order-view.component.scss',
@@ -44,9 +44,21 @@ public _order: OrderService = inject(OrderService);
 private _wsService: WebSocketsService = inject(WebSocketsService);
 private _snackBar: MatSnackBar = inject(MatSnackBar);
 private _localStorage: LocalstorageService = inject(LocalstorageService);
+rol: number = 0;
 
 async ngOnInit() {
+  const user = this._localStorage.getItem('user');
+  this.rol = user.rol;
 
+  // Si es cliente (rol=3) se autocompletara el nombre
+  if (this.rol === 3) {
+    this._order.formOrder.controls['client'].patchValue(user.name);
+    // Se selecciona solo "Para llevar" (value=0) para todos los productos
+    this.eachProduct().controls.forEach((product: AbstractControl) => {
+      const productAux: FormGroup = product as FormGroup;
+      productAux.controls['order_type'].patchValue(0);
+    });
+  }
 }
 
 filterExtras(item: any, type: 0 | 1) {
@@ -57,7 +69,7 @@ filterExtras(item: any, type: 0 | 1) {
 
 totalProducts() {
   return this.eachProduct()
-    .value.map((product: any) => product.unit_price)
+    .value.map((product: any) => parseFloat(product.unit_price) || 0)
     .reduce((previous: number, current: number) => previous + current, 0);
 }
 
@@ -65,7 +77,7 @@ totalExtras() {
   return this.eachProduct()
     .value.map((product: any) =>
       product.not_ingredient
-        .map((ingredient: any) => ingredient.price)
+        .map((ingredient: any) => parseFloat(ingredient.price) || 0) 
         .reduce((previous: number, current: number) => previous + current, 0)
     )
     .reduce((previous: number, current: number) => previous + current, 0);
@@ -92,9 +104,6 @@ selected(event: MatRadioChange) {
 }
 
 async placeOrder() {
-  console.log(this._order.formOrder.value);
-  
-
   this._order.formOrder.controls['users_idusers'].patchValue(this._localStorage.getItem('user').idusers);
 
 
@@ -108,8 +117,12 @@ async placeOrder() {
     
       this._snackBar.open("Orden realizada", "", { duration: 3000, verticalPosition: 'top' });
       
-    
-      this._router.navigate(['private/orders-view']);
+      // Si es cliente se reditije a sus ordenes 
+      if (this.rol === 3) {
+        this._router.navigate(['private/my-orders']);
+      } else {
+        this._router.navigate(['private/orders-view']);
+      }
       
     
       this._order.formOrder.reset();

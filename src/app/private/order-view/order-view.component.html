@@ -1,81 +1,166 @@
-<section class="order-container float-container">
-    <form [formGroup]="_order.formOrder" (ngSubmit)="placeOrder()">
-    <div class="buttons">
-        <h1>Orden</h1>
-            <mat-form-field>
-                <mat-label>
-                    Cliente
-                </mat-label>
-                <input matInput type="text" formControlName="client">
-            </mat-form-field>
-            <mat-radio-group (change)="selected($event)" class="unselect">
-                <mat-radio-button [value]="1">
-                    Comer aquí
-                </mat-radio-button>
-                <mat-radio-button [value]="0">
-                    Para llevar
-                </mat-radio-button>
-            </mat-radio-group>
+<div class="min-h-[calc(100vh-88px)] bg-gray-light p-6">
+  <form [formGroup]="_order.formOrder" (ngSubmit)="placeOrder()" class="max-w-4xl mx-auto">
+    
+    <div class="bg-white rounded-2xl p-6 mb-6 shadow-sm">
+      <h1 class="text-2xl font-bold text-black font-outfit mb-6 flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" class="text-primary">
+          <path d="M4 18V6C4 4.343 5.343 3 7 3H17C18.657 3 20 4.343 20 6V18C20 19.657 18.657 21 17 21H7C5.343 21 4 19.657 4 18Z" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 7H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M8 11H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M8 15H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Resumen de Orden
+      </h1>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="form-control w-full">
+          <label class="label">
+            <span class="label-text font-outfit font-semibold text-gray-custom">Nombre del Cliente</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-custom">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M5 20c0-4 3.5-7 7-7s7 3 7 7"/>
+              </svg>
+            </span>
+            <input type="text" 
+                   formControlName="client"
+                   [readonly]="rol === 3"
+                   placeholder="Nombre del cliente"
+                   class="input input-bordered w-full pl-12 font-outfit bg-white focus:border-primary focus:outline-none"
+                   [class.bg-gray-100]="rol === 3"
+                   [class.cursor-not-allowed]="rol === 3">
+          </div>
+        </div>
+        
+        <div class="form-control w-full">
+          <label class="label">
+            <span class="label-text font-outfit font-semibold text-gray-custom">Tipo de Orden (General)</span>
+          </label>
+          <mat-radio-group (change)="selected($event)" class="flex gap-4 mt-2 order-type-radio">
+            <mat-radio-button [value]="1" class="font-outfit">Comer aqui</mat-radio-button>
+            <mat-radio-button [value]="0" [checked]="rol === 3" class="font-outfit">Para llevar</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
     </div>
     
-    <div class="products-order" formArrayName="order_details">
-        @for (item of eachProduct().controls; track $index) {
-            <div class="product">
-                <div class="product-container">
-                    <h2>{{item.value.name_category}} {{item.value.name}} </h2>
-                    <div class="order-type-container">
-                        <form action="" [formGroupName]="$index">
-                            <mat-radio-group formControlName="order_type" >
-                                <mat-radio-button [value]="1">
-                                    Comer aquí
-                                </mat-radio-button>
-                                <mat-radio-button [value]="0">
-                                    Para llevar
-                                </mat-radio-button>
-                            </mat-radio-group>
-                        </form>
-                        <h5>{{item.value.unit_price | currency}}</h5>
-                        <button type="button"(click)="deleteProduct($index)"><mat-icon>delete</mat-icon></button>
-                    </div>
-                </div>
-                <div class="comments">
-                    @if (filterExtras(item.value, 1).length) {
-                    <h3>Extras</h3>
-                    @for (ingredient of filterExtras(item.value, 1); track $index) {
-                        <div class="extras-container">
-                            <h4>{{ingredient.name}}</h4>
-                            <h5>{{ingredient.price | currency}}</h5>
-                        </div>
-                    }
+    <div class="space-y-4 mb-6" formArrayName="order_details">
+      @for (item of eachProduct().controls; track item; let idx = $index) {
+        <div class="bg-white rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" class="text-secondary">
+                  <path d="M4 11C4 11 4 8 12 8C20 8 20 11 20 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M4 11C4 11 4 16 12 16C20 16 20 11 20 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M4 16V18C4 18 4 20 12 20C20 20 20 18 20 18V16" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <div>
+                <h2 class="font-bold text-black font-outfit">{{ item.value.name }}</h2>
+                <span class="text-xs text-gray-custom font-outfit">{{ item.value.name_category }}</span>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+              <span class="text-lg font-bold text-secondary font-outfit">{{ item.value.unit_price | currency }}</span>
+              <button type="button" 
+                      (click)="deleteProduct(idx)"
+                      class="btn btn-circle btn-sm btn-ghost hover:bg-red-100 hover:text-red-600">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/>
+                  <line x1="10" y1="11" x2="10" y2="17"/>
+                  <line x1="14" y1="11" x2="14" y2="17"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="mb-4 p-3 bg-gray-light rounded-xl" [formGroupName]="idx">
+            <span class="text-xs font-semibold text-gray-custom font-outfit uppercase mb-2 block">Tipo de servicio</span>
+            <mat-radio-group formControlName="order_type" class="flex gap-4 order-type-radio">
+              <mat-radio-button [value]="1" class="font-outfit text-sm">Comer aqui</mat-radio-button>
+              <mat-radio-button [value]="0" class="font-outfit text-sm">Para llevar</mat-radio-button>
+            </mat-radio-group>
+          </div>
+          
+          @if (filterExtras(item.value, 1).length) {
+            <div class="mb-3">
+              <span class="text-xs font-semibold text-green-600 font-outfit uppercase mb-2 flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Extras
+              </span>
+              <div class="space-y-2 pl-4">
+                @for (ingredient of filterExtras(item.value, 1); track ingredient.name) {
+                  <div class="flex items-center justify-between bg-green-50 rounded-lg px-3 py-2">
+                    <span class="font-outfit text-sm text-black">{{ ingredient.name }}</span>
+                    <span class="font-outfit text-sm font-semibold text-green-600">+{{ ingredient.price | currency }}</span>
+                  </div>
                 }
-                @if (filterExtras(item.value, 0).length){
-                    <h3>Excepciones</h3>
-                    @for (ingredient of filterExtras(item.value, 0); track $index) {
-                        <div class="exception-container">
-                            <h4>{{ingredient.name}}</h4>
-                        </div>
-                    }
+              </div>
+            </div>
+          }
+          
+          @if (filterExtras(item.value, 0).length) {
+            <div>
+              <span class="text-xs font-semibold text-secondary font-outfit uppercase mb-2 flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14"/>
+                </svg>
+                Excepciones (Sin)
+              </span>
+              <div class="space-y-2 pl-4">
+                @for (ingredient of filterExtras(item.value, 0); track ingredient.name) {
+                  <div class="flex items-center bg-red-50 rounded-lg px-3 py-2">
+                    <span class="font-outfit text-sm text-secondary">Sin {{ ingredient.name }}</span>
+                  </div>
                 }
-                </div>
+              </div>
             </div>
-        }
-        <div class="total-container">
-            <div class="subtotal">
-                <h4>Subtotal</h4>
-                <h4>{{totalProducts() | currency}}</h4>
-            </div>
-            <div class="total-extras">
-                <h4>Total extras</h4>
-                <h4>{{totalExtras() | currency}}</h4>
-            </div>
-            <div class="total-order">
-                <h3>Total</h3>
-                <h3>{{totalOrder() | currency}}</h3>
-            </div>
+          }
         </div>
+      }
     </div>
-    <div class="float"><button class="button-secundary" [routerLink]="['/private/menu']"
-        routerLinkActive="router-link-active">Regresar</button>
-        <button class="button-primary" type="submit">Ordenar</button></div>
-</form>
-</section>
+    
+    <div class="bg-white rounded-2xl p-6 mb-6 shadow-sm">
+      <div class="max-w-xs ml-auto space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="font-outfit text-gray-custom">Subtotal productos</span>
+          <span class="font-outfit font-semibold text-black">{{ totalProducts() | currency }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="font-outfit text-gray-custom">Total extras</span>
+          <span class="font-outfit font-semibold text-green-600">+{{ totalExtras() | currency }}</span>
+        </div>
+        <div class="divider my-2"></div>
+        <div class="flex justify-between items-center">
+          <span class="font-outfit font-bold text-lg text-black">Total</span>
+          <span class="font-outfit font-bold text-xl text-primary">{{ totalOrder() | currency }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="flex justify-end gap-4">
+      <button type="button"
+              [routerLink]="['/private/menu']"
+              class="btn bg-white border-border hover:bg-gray-light text-gray-custom font-outfit gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Regresar al menu
+      </button>
+      <button type="submit"
+              class="btn bg-primary hover:bg-primary-hover text-black font-outfit font-semibold gap-2 border-none">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12l5 5L20 7"/>
+        </svg>
+        Confirmar Orden
+      </button>
+    </div>
+    
+  </form>
+</div>

@@ -1,55 +1,147 @@
-mat-drawer-container{
-    height: 100vh;
-.icon-container{
-    display: flex;
-    flex-direction: column;
-    width: 56px;
-    gap: 16px;
-    padding: 16px;
+/* ============================== */
+/* 1. Variables y Estilos Base    */
+/* ============================== */
+
+/* Variables CSS */
+:root {
+  --primary: #FFD700;   /* Amarillo */
+  --secondary: #E31837; /* Rojo/Borgoña */
+  --black: #1f2937;     /* Gris oscuro */
+  --gray: #9ca3af;      /* Gris */
+  --gray-light: #f9fafb; /* Fondo principal */
+  --gray-700: #4b5563;  /* Texto gris oscuro */
+  --gray-500: #6b7280;  /* Iconos/Texto secundario */
+  --gray-100: #f3f4f6;  /* Hover del menú */
+  --yellow-600: #ca8a04; /* Hover del primary button */
 }
-mat-drawer{
-    width: 48px;
-    transition-duration: 300ms;
-    &:hover{
-        width: 320px;
+
+/* Estilo base para todos los links del menú */
+.menu-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* gap-3 */
+  padding: 0.75rem 1rem; /* px-4 py-3 */
+  border-radius: 0.75rem; /* rounded-xl */
+  font-family: 'outfit', sans-serif;
+  color: var(--gray-700);
+  transition-property: background-color, color, box-shadow;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+
+  &:hover {
+    background-color: var(--gray-100);
+  }
+
+  svg {
+    color: var(--gray-500);
+    transition-property: color;
+    transition-duration: 200ms;
+  }
+}
+
+/* Estilo para el botón de logout en el footer (icono) */
+.btn-icon-ghost {
+    /* Simulación de btn btn-ghost btn-sm btn-circle */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem; /* h-10 */
+    height: 2.5rem; /* w-10 */
+    border-radius: 9999px; /* btn-circle */
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+
+    color: var(--gray-500);
+    transition: all 200ms ease;
+
+    &:hover {
+      background-color: var(--secondary);
+      color: white;
     }
 }
-.log-out{
-    padding: 16px;
 
-}
-nav{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-}
-header{
-    padding: 16px;
-    display: flex;
-    gap: 16px;
-    justify-content: space-between;
-div{
+/* Estilo para el botón de logout del cocinero (header) */
+.btn-primary-sm {
+    background-color: var(--primary);
+    color: var(--gray-800, #1f2937); /* Asumiendo que black/gray-800 es el texto */
+    font-weight: 600;
+    padding: 0.5rem 1rem; /* py-2 px-4 */
+    border-radius: 0.5rem; /* rounded-lg */
+    transition: background-color 200ms ease;
+    border: none;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 16px;
-    font-weight: 500;
-    h2{
-        font-size: 24px;
+    gap: 0.5rem; /* gap-2 */
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--yellow-600);
     }
 }
-h2,h3{
-    margin: 0;
+
+/* ============================== */
+/* 2. Items Activos y Transiciones*/
+/* ============================== */
+
+/* Estilo para elementos activos del menu (routerLinkActive="active-menu-item") */
+.active-menu-item {
+  background-color: var(--secondary) !important;
+  color: white !important;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(227, 24, 55, 0.2); 
+
+  svg {
+    color: white !important;
+  }
+  
+  &:hover {
+    background-color: var(--secondary) !important; 
+  }
 }
+
+/* Animacion suave para transiciones de la barra lateral */
+aside {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-button{
-    display: flex;
-    gap: 8px;
-    justify-content: flex-start;
-    height: 24px;
-    svg{
-        flex-shrink: 0;
+
+/* Transición suave para el contenido principal */
+main {
+  transition: margin-left 0.3s ease;
+}
+
+/* ============================== */
+/* 3. Scrollbar y Responsive      */
+/* ============================== */
+
+/* Scrollbar personalizado */
+.overflow-auto {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--gray);
+    border-radius: 3px;
+    
+    &:hover {
+      background-color: var(--secondary);
     }
+  }
 }
+
+/* Responsive: Ocultar sidebar en móviles */
+@media (max-width: 767px) {
+  aside {
+    transform: translateX(-100%);
+  }
+  
+  main {
+    margin-left: 0 !important;
+  }
 }
